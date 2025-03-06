@@ -1,11 +1,10 @@
-using System.Collections;
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
 [ExecuteAlways]
 public class CoordinateLabel : MonoBehaviour
 {
+	string tileName;
 	TMP_Text label;
 	Vector2Int coordinates = new Vector2Int();
 
@@ -18,19 +17,32 @@ public class CoordinateLabel : MonoBehaviour
 	}
 
 
-    void Update ()
+	void Start ()
+	{
+		tileName = GetComponentInChildren<TileName>().Name;
+	}
+
+
+	void Update ()
     {
         if (!Application.isPlaying)	// Execute only in Editor mode.
 		{
 			DisplayCoordinates();
+			UpdateName();
 		}
     }
 
 
 	void DisplayCoordinates ()
 	{
-		coordinates.x = Mathf.RoundToInt( transform.parent.position.x / 10 );
-		coordinates.y = Mathf.RoundToInt( transform.parent.position.z / 10 );
-		label.text = "(" + coordinates.x + "," + coordinates.y + ")";
+		coordinates.x = Mathf.RoundToInt( transform.parent.position.x / UnityEditor.EditorSnapSettings.move.x );
+		coordinates.y = Mathf.RoundToInt( transform.parent.position.z / UnityEditor.EditorSnapSettings.move.z );
+		label.text = coordinates.ToString();
+	}
+
+
+	void UpdateName ()
+	{
+		transform.parent.name = tileName + "Tile " + coordinates.ToString();
 	}
 }
