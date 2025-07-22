@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Assertions;
 
 
 public class EnemyMover : MonoBehaviour
@@ -11,12 +12,22 @@ public class EnemyMover : MonoBehaviour
 	[SerializeField][Range(0, 5)] float speed = 1;
 
 
+	Enemy enemy;
+
+
  
 	void OnEnable()
 	{
 		FindPath();
 		ReturnToStart();
 		StartCoroutine(FollowPathRoutine());
+	}
+
+
+	void Awake()
+	{
+		enemy = GetComponent<Enemy>();
+		Assert.IsNotNull(enemy, "EnemyHealth.Start(): enemy not found in the prefab.");
 	}
 
 
@@ -51,6 +62,13 @@ public class EnemyMover : MonoBehaviour
 			}
 		}
 
+		GoalReached();
+	}
+
+
+	void GoalReached()
+	{
+		enemy.StealGold();
 		gameObject.SetActive(false);
 	}
 
