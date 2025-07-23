@@ -38,7 +38,14 @@ public class TargetLocator : MonoBehaviour
 	{
 		if (target != null)
 		{
-			return;
+			if (!target.gameObject.activeInHierarchy)
+			{
+				target = null;	// Prevents killed targets to be targeted again.
+			}
+			else
+			{
+				return;	// If already targeting an enemy, don't find another target.
+			}
 		}
 
 		Enemy[] enemies = FindObjectsOfType<Enemy>();
@@ -53,6 +60,11 @@ public class TargetLocator : MonoBehaviour
 
 		foreach (Enemy enemy in enemies)
 		{
+			if (!enemy.gameObject.activeInHierarchy)
+			{
+				continue;	// Prevents killed targets to be targeted again.
+			}
+
 			float targetDistance = Vector3.Distance(this.transform.position, enemy.transform.position);
 
 			if (targetDistance < maxDistance)

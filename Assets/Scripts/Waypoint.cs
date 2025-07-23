@@ -1,21 +1,30 @@
 using UnityEngine;
+using UnityEngine.Assertions;
 
 
 public class Waypoint : MonoBehaviour
 {
-	[SerializeField] GameObject towerPrefab;
+	[SerializeField] Tower tower;
 	
 	[SerializeField] bool isPlaceable;
 	public bool IsPlaceable => isPlaceable;
 
 
 
+	void Awake()
+	{
+		Assert.IsNotNull(tower, "Waypoint.Awake(): tower not found in prefab.");
+	}
+
+
 	void OnMouseDown()
 	{
-		if (isPlaceable && towerPrefab)
+		if (!isPlaceable)
 		{
-			Instantiate(towerPrefab, this.transform);
-			isPlaceable = false;
+			return;
 		}
+
+		bool isPlaced = tower.CreateTower(transform.position);
+		isPlaceable = !isPlaced;
 	}
 }

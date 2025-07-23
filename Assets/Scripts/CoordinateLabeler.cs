@@ -3,7 +3,11 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 
+/// <summary>
+/// WARNING: This script uses some Editor functionalities. Move it to an Editor folder if you want to build an executable. It's not really necessary in game anyway.
+/// </summary>
 [ExecuteAlways]
+[RequireComponent(typeof(TMP_Text))]
 public class CoordinateLabeler : MonoBehaviour
 {
 	[SerializeField] Color defaultColor = Color.white;
@@ -45,7 +49,7 @@ public class CoordinateLabeler : MonoBehaviour
 			UpdateName();
 		}
 
-		ColorCoordinates();
+		SetLabelColor();
 		ToggleLabels();
 	}
 
@@ -73,5 +77,5 @@ public class CoordinateLabeler : MonoBehaviour
 	}
 
 
-	void ColorCoordinates() => label.color = waypoint.IsPlaceable ? defaultColor : disabledColor;
+	void SetLabelColor() => label.color = waypoint.IsPlaceable ? defaultColor : disabledColor;
 }

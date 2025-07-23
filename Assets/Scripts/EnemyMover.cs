@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 
 
+[RequireComponent(typeof(Enemy))]
 public class EnemyMover : MonoBehaviour
 {
 	[SerializeField] List<Waypoint> path = new List<Waypoint>();
@@ -15,7 +16,7 @@ public class EnemyMover : MonoBehaviour
 	Enemy enemy;
 
 
- 
+
 	void OnEnable()
 	{
 		FindPath();
@@ -26,8 +27,7 @@ public class EnemyMover : MonoBehaviour
 
 	void Awake()
 	{
-		enemy = GetComponent<Enemy>();
-		Assert.IsNotNull(enemy, "EnemyHealth.Start(): enemy not found in the prefab.");
+		enemy = GetComponent<Enemy>();	// Required.
 	}
 
 
@@ -39,8 +39,24 @@ public class EnemyMover : MonoBehaviour
 
 		foreach (Transform child in pathFolder.transform)
 		{
-			path.Add(child.GetComponent<Waypoint>());
+			Waypoint waypoint = child.GetComponent<Waypoint>();
+
+			if (waypoint != null)
+			{
+				path.Add(waypoint);
+			}
+			else
+			{
+				Debug.LogWarning("Found a tile that's not a Wayponint inside the Path!");
+			}
 		}
+	}
+
+
+	void GoalReached()
+	{
+		enemy.StealGold();
+		gameObject.SetActive(false);
 	}
 
 
@@ -64,14 +80,7 @@ public class EnemyMover : MonoBehaviour
 
 		GoalReached();
 	}
-
-
-	void GoalReached()
-	{
-		enemy.StealGold();
-		gameObject.SetActive(false);
-	}
-
+	
 
 	void ReturnToStart() => transform.position = path[0].transform.position;
 }

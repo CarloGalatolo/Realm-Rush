@@ -1,10 +1,11 @@
 using UnityEngine;
-using UnityEngine.Assertions;
 
 
+[RequireComponent(typeof(Enemy))]
 public class EnemyHealth : MonoBehaviour
 {
 	[SerializeField] int maxHitPoints = 5;
+	[SerializeField] int difficultyRamp = 1;
 
 	Enemy enemy;
 
@@ -20,8 +21,7 @@ public class EnemyHealth : MonoBehaviour
 
 	void Awake()
 	{
-		enemy = GetComponent<Enemy>();
-		Assert.IsNotNull(enemy, "EnemyHealth.Start(): enemy not found in the prefab.");
+		enemy = GetComponent<Enemy>();	// Required.
 	}
 
 
@@ -38,6 +38,7 @@ public class EnemyHealth : MonoBehaviour
 		if (currentHitPoints == 0)
 		{
 			enemy.RewardGold();
+			maxHitPoints += difficultyRamp;
 			gameObject.SetActive(false);
 		}
 	}
