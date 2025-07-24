@@ -11,10 +11,12 @@ using UnityEngine.Assertions;
 public class CoordinateLabeler : MonoBehaviour
 {
 	[SerializeField] Color defaultColor = Color.white;
-	[SerializeField] Color disabledColor = Color.gray;
+	[SerializeField] Color blockedColor = Color.gray;
+	[SerializeField] Color exploredColor = Color.yellow;
+	[SerializeField] Color pathColor = new Color(1, 0.5f, 0);	// Orange.
 
+	GridManager gridManager;
 	TMP_Text label;
-	Waypoint waypoint;
 
 	string tileName;
 	Vector2Int coordinates = new Vector2Int();
@@ -23,13 +25,13 @@ public class CoordinateLabeler : MonoBehaviour
 
 	void Awake()
 	{
+		gridManager = FindObjectOfType<GridManager>();
+		Assert.IsNotNull(gridManager, "CoordinateLabel.Awake(): gridManager not found in the scene.");
+
 		label = GetComponent<TMP_Text>();
 		Assert.IsNotNull(label, "CoordinateLabel.Awake(): label not found in prefab.");
 
 		label.enabled = !Application.isPlaying;
-
-		waypoint = GetComponentInParent<Waypoint>();
-		Assert.IsNotNull(waypoint, "CoordinateLabel.Awake(): waypoint not found in parent.");
 
 		DisplayCoordinates();    // Call only once at game start but update only in editor.
 	}
@@ -77,5 +79,35 @@ public class CoordinateLabeler : MonoBehaviour
 	}
 
 
-	void SetLabelColor() => label.color = waypoint.IsPlaceable ? defaultColor : disabledColor;
+	void SetLabelColor()
+	{
+		if (gridManager == null)
+		{
+			return;
+		}
+
+		Node node = gridManager.TryGetNode(coordinates);
+
+		if (node == null)
+		{
+			return;
+		}
+
+		if (!node.isWalkable)
+		{
+			label.color = blockedColor;
+		}
+		else if (node.isPath)
+		{
+			label.color = pathColor;
+		}
+		else if (node.isExplored)
+		{
+			label.color = exploredColor;
+		}
+		else
+		{
+			label.color = defaultColor;
+		}
+	}
 }

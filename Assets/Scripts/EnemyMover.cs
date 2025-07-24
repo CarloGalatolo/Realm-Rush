@@ -80,7 +80,15 @@ public class EnemyMover : MonoBehaviour
 
 		GoalReached();
 	}
-	
 
-	void ReturnToStart() => transform.position = path[0].transform.position;
+
+	void ReturnToStart()
+	{
+		if (path.Count == 0)
+		{
+			return;
+		}
+		
+		transform.position = path[0].transform.position;
+	}
 }
